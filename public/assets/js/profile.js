@@ -1,4 +1,4 @@
-$("#profile-form button").click(function (e) {
+$("#btn-save-profile").click(function (e) {
   $.ajax({
     type: "POST",
     url: "/profile",
