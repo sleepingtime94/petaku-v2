@@ -49,48 +49,48 @@ class AuthController
         $req = (object) $_POST;
         $username = $this->sanitizeIn(strtolower($req->username));
         $password = $req->password;
-        // $turnstileResponse = $_POST['turnstileToken'];
-        // $secretKey = $_ENV['CF_TURNSTILE_SECRET_KEY'];
+        $turnstileResponse = $_POST['turnstileToken'];
+        $secretKey = $_ENV['CF_TURNSTILE_SECRET_KEY'];
 
-        // $verifyURL = 'https://challenges.cloudflare.com/turnstile/v0/siteverify';
-        // $data = [
-        //     'secret' => $secretKey,
-        //     'response' => $turnstileResponse,
-        //     'remoteip' => $_SERVER['REMOTE_ADDR']
-        // ];
+        $verifyURL = 'https://challenges.cloudflare.com/turnstile/v0/siteverify';
+        $data = [
+            'secret' => $secretKey,
+            'response' => $turnstileResponse,
+            'remoteip' => $_SERVER['REMOTE_ADDR']
+        ];
 
-        // $options = [
-        //     'http' => [
-        //         'header'  => "Content-type: application/x-www-form-urlencoded\r\n",
-        //         'method'  => 'POST',
-        //         'content' => http_build_query($data)
-        //     ]
-        // ];
+        $options = [
+            'http' => [
+                'header'  => "Content-type: application/x-www-form-urlencoded\r\n",
+                'method'  => 'POST',
+                'content' => http_build_query($data)
+            ]
+        ];
 
-        // $context  = stream_context_create($options);
-        // $result = file_get_contents($verifyURL, false, $context);
-        // $resultData = json_decode($result, true);
+        $context  = stream_context_create($options);
+        $result = file_get_contents($verifyURL, false, $context);
+        $resultData = json_decode($result, true);
 
-        // if ($resultData['success']) {
-        $users = (object) $this->userModel->selectBy($username)[0];
+        if ($resultData['success']) {
+            $users = (object) $this->userModel->selectBy($username)[0];
 
-        if ($users->status !== 0) {
-            if (password_verify($password, $users->password)) {
-                $_SESSION['authToken'] = base64_encode(date('dmyhis'));
-                $_SESSION['userName'] = $username;
-                $_SESSION['userId'] = $users->id;
-                $_SESSION['userLevel'] = $users->level;
-                session_regenerate_id(true);
-                echo json_encode(['status' => 'success', 'message' => 'Mengalihkan ke halaman menu utama.']);
+            if ($users->status !== 0) {
+                if (password_verify($password, $users->password)) {
+                    $_SESSION['authToken'] = base64_encode(date('dmyhis'));
+                    $_SESSION['userName'] = $username;
+                    $_SESSION['userId'] = $users->id;
+                    $_SESSION['userLevel'] = $users->level;
+                    session_regenerate_id(true);
+                    echo json_encode(['status' => 'success', 'message' => 'Mengalihkan ke halaman menu utama.']);
+                } else {
+                    echo json_encode(['status' => 'error', 'message' => 'Silahkan periksa kembali nama pengguna / kata sandi.']);
+                }
             } else {
-                echo json_encode(['status' => 'error', 'message' => 'Silahkan periksa kembali nama pengguna / kata sandi.']);
+                echo json_encode(['status' => 'error', 'message' => 'Akun anda belum aktif.']);
             }
         } else {
-            echo json_encode(['status' => 'error', 'message' => 'Akun anda belum aktif.']);
+            echo json_encode(['status' => 'error', 'message' => 'Captcha tidak valid, silahkan coba lagi.']);
         }
-        // } else {
-        //     echo json_encode(['status' => 'error', 'message' => 'Captcha tidak valid, silahkan coba lagi.']);
-        // }
     }
 
     public function register()
