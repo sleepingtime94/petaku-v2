@@ -1,0 +1,135 @@
+{% extends "layout.twig" %} {% block content %}
+{% set embedFile = (data.file | default('default')) | split('.')[0] %}
+{% set embedFileResponse = data.file_response | split('.')[0] %}
+
+<div class="container-fluid">
+    <div class="my-3">
+        <div class="row">
+            <div class="col-md-6">
+                <div class="p-3 permohonan-detail shadow">
+                    <div class="table-responsive">
+                        <table class="table table-hover">
+                            <tr>
+                                <td>Status</td>
+                                <td class="text-center">:</td>
+                                <td>{{ data.product_status | raw }}</td>
+                            </tr>
+                            {% if data.status == 3 %}
+                            <tr>
+                                <td>Catatan</td>
+                                <td class="text-center">:</td>
+                                <td>{{ data.notes }}</td>
+                            </tr>
+                            {% endif %}
+                            <tr>
+                                <td>Kategori</td>
+                                <td class="text-center">:</td>
+                                <td>{{ data.product_category | raw }}</td>
+                            </tr>
+                            <tr>
+                                <td>Instansi</td>
+                                <td class="text-center">:</td>
+                                <td>{{ data.gov_name }}</td>
+                            </tr>
+                            <tr>
+                                <td>Tanggal Pengajuan</td>
+                                <td class="text-center">:</td>
+                                <td>{{ data.created | date('d-n-Y') }}</td>
+                            </tr>
+                            <tr>
+                                <td>Tujuan</td>
+                                <td class="text-center">:</td>
+                                <td>{{ data.purpose }}</td>
+                            </tr>
+                            <tr>
+                                <td>Keterangan</td>
+                                <td class="text-center">:</td>
+                                <td>{{ data.about | default('-') }}</td>
+                            </tr>
+                        </table>
+                    </div>
+                </div>
+                {% if userLevel == 1 %}
+                <div class="d-flex justify-content-between mt-3">
+                    <div>
+                        <button id="product-verify" data-id="{{ product_id }}"
+                            class="btn btn-lg rounded-0 mx-1 btn-primary">Verifikasi</button>
+                        <button id="product-done" data-id="{{ product_id }}"
+                            class="btn btn-lg rounded-0 btn-success">Selesai</button>
+                    </div>
+                    <div>
+                        <button id="product-delete" data-id="{{ product_id }}"
+                            class="btn btn-lg rounded-0 btn-danger">Hapus</button>
+                    </div>
+                </div>
+                {% endif %}
+            </div>
+            <div class="col-md-6">
+                <div class="permohonan-dokumen shadow">
+                    <nav>
+                        <div class="nav nav-tabs" id="nav-tab" role="tablist">
+                            <button class="nav-link active rounded-0" id="nav-home-tab" data-bs-toggle="tab"
+                                data-bs-target="#nav-home" type="button" role="tab" aria-controls="nav-home"
+                                aria-selected="true">Dokumen Permohonan</button>
+                            <button class="nav-link rounded-0" id="nav-profile-tab" data-bs-toggle="tab"
+                                data-bs-target="#nav-profile" type="button" role="tab" aria-controls="nav-profile"
+                                aria-selected="false">Dokumen
+                                Balasan</button>
+                            {% if userLevel == 1 %}
+                            <button class="nav-link" id="nav-contact-tab" data-bs-toggle="tab"
+                                data-bs-target="#nav-contact" type="button" role="tab" aria-controls="nav-contact"
+                                aria-selected="false">Unggah Dokumen</button>
+                            {% endif %}
+
+                        </div>
+                    </nav>
+                    <div class="tab-content" id="nav-tabContent">
+                        <div class="tab-pane fade show active" id="nav-home" role="tabpanel"
+                            aria-labelledby="nav-home-tab" tabindex="0">
+                            <embed src="/files/{{embedFile}}" type="application/pdf" width="100%" style="height: 80vh">
+                        </div>
+                        <div class="tab-pane fade" id="nav-profile" role="tabpanel" aria-labelledby="nav-profile-tab"
+                            tabindex="0">
+                            {% if not embedFileResponse %}
+                            <div class="p-3">
+                                <div class="alert alert-info text-center" role="alert">
+                                    Belum ada dokumen.
+                                </div>
+                            </div>
+                            {% else %}
+                            <embed src="/files/{{embedFileResponse}}" type="application/pdf" width="100%"
+                                style="height: 80vh">
+                            {% endif %}
+                        </div>
+                        {% if userLevel == 1 %}
+                        <div class="tab-pane fade" id="nav-contact" role="tabpanel" aria-labelledby="nav-contact-tab"
+                            tabindex="0">
+                            <div class="p-3">
+                                <div class="required mb-2 small">Unggah berkas dokumen (format .pdf, maks. 2 MB)
+                                </div>
+                                <div class="input-group input-group-lg mb-1">
+                                    <input type="file" class="form-control rounded-0" id="file-upload"
+                                        accept="application/pdf" data-id="{{ product_id }}" required />
+                                    <input type="hidden" id="temp-file" name="file" />
+                                </div>
+                                <div class="form-floating my-3">
+                                    <textarea name="pending" class="form-control rounded-0" id="pending-notes"
+                                        style="height: 200px"></textarea>
+                                    <label for="pending">Keterangan</label>
+                                </div>
+                                <button class="btn btn-warning btn-lg rounded-0" id="product-pending"
+                                    data-id="{{ product_id }}">Kirim
+                                    Pesan</button>
+                            </div>
+                        </div>
+                        {% endif %}
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script src="/assets/js/detail.js"></script>
+
+{% endblock content %}

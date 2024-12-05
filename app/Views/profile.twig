@@ -1,0 +1,46 @@
+{% extends "layout.twig" %} {% block content %}
+<div class="container">
+  <div id="profile-form" class="my-5">
+    <div class="mb-3">
+      <div class="alert alert-info">
+        Silahkan isi dan lengkapi biodata pengguna.
+      </div>
+    </div>
+    <div class="form-floating mb-3">
+      <input type="text" class="form-control rounded-0" id="gov-name" placeholder="xxx" autocomplete="off"
+        value="{{ user.gov_name | default('-') }}" />
+      <label for="gov-name">Nama Instansi</label>
+    </div>
+    <div class="form-floating mb-3">
+      <input type="text" class="form-control rounded-0" id="gov-leader" placeholder="xxx" autocomplete="off"
+        value="{{ user.gov_leader | default('-') }}" />
+      <label for="gov-leader">Nama Lengkap</label>
+    </div>
+    <div class="form-floating mb-3">
+      <input type="text" class="form-control rounded-0" id="gov-position" placeholder="xxx" autocomplete="off"
+        value="{{ user.gov_position | default('-') }}" />
+      <label for="gov-position">Jabatan</label>
+    </div>
+    <div class="form-floating mb-3">
+      <input type="text" class="form-control rounded-0" id="gov-contact" placeholder="xxx" autocomplete="off"
+        value="{{ user.gov_contact | default('-') }}" />
+      <label for="gov-contact">Kontak Person</label>
+    </div>
+    <div class="form-floating mb-3">
+      <input type="text" class="form-control rounded-0" id="gov-phone" placeholder="xxx" autocomplete="off"
+        value="{{ user.gov_phone | default('-') }}" />
+      <label for="gov-phone">Nomor Telepon</label>
+    </div>
+    <div class="form-floating">
+      <textarea id="gov-address" class="form-control rounded-0"
+        style="height: 200px">{{ user.gov_address | default('-') }}</textarea>
+      <label for="gov-address">Alamat Kantor</label>
+    </div>
+    <div class="my-3">
+      <button class="btn btn-default btn-lg rounded-0 w-100">Simpan</button>
+    </div>
+  </div>
+</div>
+
+<script src="/assets/js/profile.js"></script>
+{% endblock %}

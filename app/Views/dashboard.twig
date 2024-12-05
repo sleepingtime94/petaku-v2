@@ -1,0 +1,240 @@
+{% extends "layout.twig" %} {% block content %}
+<div class="box-menu-dashboard">
+  <div class="container">
+    <div class="row">
+      <div class="col-md-4">
+        <div class="nav flex-column nav-pills align-items-start mb-5 me-3" id="v-pills-tab" role="tablist"
+          aria-orientation="vertical">
+          <button class="nav-link active" id="daftar-permohonan-tab" data-bs-toggle="pill"
+            data-bs-target="#daftar-permohonan" type="button" role="tab" aria-controls="daftar-permohonan"
+            aria-selected="true">
+            <i class="bi bi-list-ol me-2"></i> Daftar Permohonan
+          </button>
+          <button class="nav-link" id="permintaan-data-tab" data-bs-toggle="pill" data-bs-target="#permintaan-data"
+            type="button" role="tab" aria-controls="permintaan-data" aria-selected="false">
+            <i class="bi bi-journal-plus me-2"></i> Permintaan Data
+          </button>
+          <button class="nav-link" id="permintaan-hak-akses-tab" data-bs-toggle="pill"
+            data-bs-target="#permintaan-hak-akses" type="button" role="tab" aria-controls="permintaan-hak-akses"
+            aria-selected="false">
+            <i class="bi bi-server me-2"></i> Permintaan Hak Akses
+          </button>
+
+          {% if userLevel == 1 %}
+          <button class="nav-link" id="daftar-akun-pengguna-tab" data-bs-toggle="pill"
+            data-bs-target="#daftar-akun-pengguna" type="button" role="tab" aria-controls="daftar-akun-pengguna"
+            aria-selected="false">
+            <i class="bi bi-people-fill me-2"></i> Akun Pengguna
+          </button>
+          {% endif %}
+        </div>
+      </div>
+      <div class="col-md-8">
+        <div class="tab-content" id="v-pills-tabContent">
+          <div class="tab-pane fade show active" id="daftar-permohonan" role="tabpanel"
+            aria-labelledby="daftar-permohonan-tab" tabindex="0">
+            <div class="fs-4 mb-3">Daftar Permohonan</div>
+            <div class="table-responsive">
+              <table class="table table-hover">
+                <thead class="table-default">
+                  <th>Tanggal</th>
+                  <th>Tujuan</th>
+                  <th>Status</th>
+                  <th>Kategori</th>
+                </thead>
+                {% if listProduct %}
+                <tbody id="daftar-permohonan-list">
+                  {% for product in listProduct %}
+                  <tr data-pid="{{ product.id }}">
+                    <td>{{ product.created | date("d-m-Y") }}</td>
+                    <td>{{ product.purpose }}</td>
+                    <td>{{ product.product_status | raw }}</td>
+                    <td>{{ product.product_category }}</td>
+                  </tr>
+                  {% endfor %}
+                </tbody>
+                {% else %}
+                <tbody>
+                  <tr>
+                    <td colspan="4" class="text-center">Tidak ada permohonan</td>
+                  </tr>
+                </tbody>
+                {% endif %}
+              </table>
+            </div>
+          </div>
+          <div class="tab-pane fade" id="permintaan-data" role="tabpanel" aria-labelledby="permintaan-data-tab"
+            tabindex="0">
+            <div class="fs-4 mb-3">Permintaan Data</div>
+            <form id="form-permintaan-data" class="table-responsive">
+              <div class="form-floating mb-4">
+                <input type="text" class="form-control rounded-0" name="purpose" placeholder="xxx" autocomplete="off"
+                  required />
+                <label for="">Tujuan Permintaan Data</label>
+              </div>
+              <div class="required mb-2">Unggah berkas dokumen (format .pdf, maks. 2 MB)</div>
+              <div class="input-group input-group-lg mb-1">
+                <input type="file" class="form-control rounded-0" id="file-upload" accept="application/pdf" required />
+                <input type="hidden" id="temp-file" name="file" />
+              </div>
+              <div class="progress" style="height: 10px">
+                <div id="progressBar" class="progress-bar progress-bar-animated bg-primary progress-bar-striped"
+                  role="progressbar" aria-valuenow="0" aria-valuemin="0" aria-valuemax="100"></div>
+              </div>
+              <div class="form-floating mt-4">
+                <textarea name="about" class="form-control rounded-0" placeholder="Keterangan"
+                  style="height: 200px"></textarea>
+                <label for="exampleFormControlTextarea1">Keterangan</label>
+              </div>
+              <div class="mt-4">
+                <button id="send-request" class="btn btn-default rounded-0 btn-lg w-100">
+                  Kirim Permintaan
+                </button>
+              </div>
+            </form>
+          </div>
+          <div class="tab-pane fade" id="permintaan-hak-akses" role="tabpanel"
+            aria-labelledby="permintaan-hak-akses-tab" tabindex="0">
+            <div class="fs-4 mb-3">Permintaan Hak Akses</div>
+            <form id="form-hak-akses" class="table-responsive">
+              <div class="form-floating mb-3">
+                <input type="text" class="form-control rounded-0" name="purpose" placeholder="xxx" autocomplete="off"
+                  required />
+                <label for="">Tujuan Permintaan Data</label>
+              </div>
+              <div class="my-2 fw-bold">Elemen Data</div>
+              <div class="small text-secondary">
+                <div class="form-check">
+                  <input class="form-check-input" type="checkbox" name="element" value="1" id="flexCheckChecked" checked
+                    disabled />
+                  <label class="form-check-label" for="flexCheckChecked">
+                    Nomor Kartu Keluarga
+                  </label>
+                </div>
+                <div class="form-check">
+                  <input class="form-check-input" type="checkbox" name="element" value="2" id="flexCheckChecked" checked
+                    disabled />
+                  <label class="form-check-label" for="flexCheckChecked">
+                    Nomor Induk Kependudukan (NIK)
+                  </label>
+                </div>
+                <div class="form-check">
+                  <input class="form-check-input" type="checkbox" name="element" value="3" id="flexCheckChecked" checked
+                    disabled />
+                  <label class="form-check-label" for="flexCheckChecked">
+                    Nama Lengkap
+                  </label>
+                </div>
+                <div class="form-check">
+                  <input class="form-check-input" type="checkbox" name="element" value="4" id="flexCheckChecked" checked
+                    disabled />
+                  <label class="form-check-label" for="flexCheckChecked">
+                    Jenis Kelamin
+                  </label>
+                </div>
+                <div class="form-check">
+                  <input class="form-check-input" type="checkbox" name="element" value="5" id="flexCheckChecked" checked
+                    disabled />
+                  <label class="form-check-label" for="flexCheckChecked">
+                    Tempat Lahir
+                  </label>
+                </div>
+                <div class="form-check">
+                  <input class="form-check-input" type="checkbox" name="element" value="6" id="flexCheckChecked" checked
+                    disabled />
+                  <label class="form-check-label" for="flexCheckChecked">
+                    Tanggal/Bulan/Tahun Lahir
+                  </label>
+                </div>
+                <div class="form-check">
+                  <input class="form-check-input" type="checkbox" name="element" value="7" id="flexCheckChecked" checked
+                    disabled />
+                  <label class="form-check-label" for="flexCheckChecked">
+                    Status Perkawinan
+                  </label>
+                </div>
+                <div class="form-check">
+                  <input class="form-check-input" type="checkbox" name="element" value="8" id="flexCheckChecked" checked
+                    disabled />
+                  <label class="form-check-label" for="flexCheckChecked">
+                    Jenis Pekerjaan
+                  </label>
+                </div>
+                <div class="form-check">
+                  <input class="form-check-input" type="checkbox" name="element" value="9" id="flexCheckChecked" checked
+                    disabled />
+                  <label class="form-check-label" for="flexCheckChecked">
+                    Alamat Sekarang
+                  </label>
+                </div>
+              </div>
+              {# <div class="my-3">
+                <div class="mb-2">
+                  Silahkan unduh format surat berikut sebelum mengunggah berkas
+                  dokumen.
+                </div>
+                <button id="download-template" class="btn btn-outline-success btn-lg rounded-0 w-100" type="button">
+                  <i class="bi bi-download me-2"></i> Unduh Template Surat
+                </button>
+              </div> #}
+              <div class="required mt-4 mb-2">Unggah berkas dokumen (format .pdf, maks. 2 MB)</div>
+              <div class="input-group input-group-lg mb-1">
+                <input type="file" class="form-control rounded-0" id="file-upload" accept="application/pdf" required />
+                <input type="hidden" id="temp-file" name="file" />
+              </div>
+              <div class="progress" style="height: 10px">
+                <div id="progressBar" class="progress-bar progress-bar-animated bg-primary progress-bar-striped"
+                  role="progressbar" aria-valuenow="0" aria-valuemin="0" aria-valuemax="100"></div>
+              </div>
+              <div class="mt-4">
+                <button id="send-request" class="btn btn-default rounded-0 btn-lg w-100" type="submit">
+                  Kirim Permintaan
+                </button>
+              </div>
+            </form>
+          </div>
+
+          {% if userLevel == 1 %}
+          <div class="tab-pane fade" id="daftar-akun-pengguna" role="tabpanel"
+            aria-labelledby="daftar-akun-pengguna-tab" tabindex="0">
+            <div class="fs-4 mb-2">Akun Pengguna</div>
+            <div class="mb-3">
+              <button id="add-user" class="btn btn-default rounded-0">
+                <i class="bi bi-plus"></i>
+                Tambah Baru
+              </button>
+            </div>
+            <div class="table-responsive">
+              <table class="table table-hover">
+                <thead class="table-default">
+                  <th>Nama</th>
+                  <th>Instansi</th>
+                  <th>Status</th>
+                  <th>Level</th>
+                </thead>
+                <tbody id="daftar-akun-pengguna-list">
+                  {% for user in listUser %}
+                  {% if user.privilege != 1 %}
+                  {% set embedFile = user.document | split('.')[0] %}
+                  <tr data-id="{{ user.id }}" data-username="{{ user.username }}" data-status="{{ user.status }}"
+                    data-level="{{ user.level }}" data-gov="{{ user.gov_name }}" data-doc="{{ embedFile }}">
+                    <td>{{ user.username }}</td>
+                    <td>{{ user.gov_name }}</td>
+                    <td>{{ user.user_status }}</td>
+                    <td>{{ user.user_level }}</td>
+                  </tr>
+                  {% endif %}
+                  {% endfor %}
+                </tbody>
+              </table>
+            </div>
+          </div>
+          {% endif %}
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script src="/assets/js/dashboard.js"></script>
+{% endblock %}

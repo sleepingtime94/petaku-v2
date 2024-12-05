@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>{{ title }}</title>
+  <link rel="stylesheet" href="/assets/css/bootstrap.min.css" />
+  <link rel="stylesheet" href="/assets/css/app.css" />
+  <link rel="stylesheet" href="/assets/css/sweetalert2.min.css" />
+  <script src="/assets/js/bootstrap.min.js"></script>
+  <script src="/assets/js/jquery.min.js"></script>
+  <script src="/assets/js/sweetalert2.all.min.js"></script>
+</head>
+
+<body>
+  <div class="container-fluid header">
+    <nav class="navbar navbar-expand-lg bg-body-tertiary p-3 border-0 shadow-sm align-items-center">
+      <div class="container">
+        <a class="navbar-brand text-light logo focus-expand" href="/">
+          PETAKU
+        </a>
+        <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNavAltMarkup"
+          aria-controls="navbarNavAltMarkup" aria-expanded="false" aria-label="Toggle navigation">
+          <span class="navbar-toggler-icon"></span>
+        </button>
+        <div class="collapse navbar-collapse" id="navbarNavAltMarkup">
+          <div class="navbar-nav ms-auto">
+            {% if not authToken %}
+            <a class="nav-link text-light me-5" href="/dashboard">
+              <i class="bi bi-clipboard-data me-1"></i> Permintaan Data
+            </a>
+            <a class="nav-link text-light me-5" href="/agregat-kependudukan">
+              <i class="bi bi-globe-asia-australia me-1"></i> Agregat
+              Kependudukan
+            </a>
+            {% else %}
+            <a class="nav-link text-light me-5" href="/dashboard">
+              <i class="bi bi-clipboard-data me-1"></i> Permintaan Data
+            </a>
+            <a class="nav-link text-light me-5" href="/agregat-kependudukan">
+              <i class="bi bi-globe-asia-australia me-1"></i> Agregat
+              Kependudukan
+            </a>
+            <a class="nav-link text-light me-5" href="/profile">
+              <i class="bi bi-person-circle me-1"></i> Profil
+            </a>
+            <a class="nav-link text-light" href="/logout">
+              <i class="bi bi-arrow-clockwise me-1"></i> Keluar
+            </a>
+            {% endif %}
+          </div>
+        </div>
+      </div>
+    </nav>
+  </div>
+
+  {% block content %}{% endblock %}
+</body>
+
+</html>
